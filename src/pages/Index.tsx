@@ -1,13 +1,11 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
-type Section = "chats" | "calls" | "statuses" | "video" | "dating" | "services" | "contacts" | "profile" | "settings";
+type Section = "chats" | "calls" | "dating" | "services" | "contacts" | "profile" | "settings";
 
 const NAV_ITEMS: { id: Section; label: string; icon: string; color: string }[] = [
   { id: "chats", label: "Чаты", icon: "MessageCircle", color: "#A855F7" },
   { id: "calls", label: "Звонки", icon: "Phone", color: "#06B6D4" },
-  { id: "statuses", label: "Статусы", icon: "Zap", color: "#F97316" },
-  { id: "video", label: "Видео", icon: "Play", color: "#EC4899" },
   { id: "dating", label: "Знакомства", icon: "Heart", color: "#F43F5E" },
   { id: "services", label: "Услуги", icon: "Briefcase", color: "#10B981" },
   { id: "contacts", label: "Контакты", icon: "Users", color: "#3B82F6" },
@@ -16,14 +14,14 @@ const NAV_ITEMS: { id: Section; label: string; icon: string; color: string }[] =
 ];
 
 const mockChats = [
-  { id: 1, name: "Алексей Громов", msg: "Отправлю файлы сегодня вечером 👍", time: "14:32", unread: 3, online: true, avatar: "АГ", color: "#7C3AED", group: false },
-  { id: 2, name: "Маркетинг команда", msg: "Юля: обновила презентацию!", time: "13:15", unread: 12, online: false, avatar: "МК", color: "#06B6D4", group: true },
-  { id: 3, name: "Соня Белова", msg: "Увидимся завтра?", time: "11:48", unread: 0, online: true, avatar: "СБ", color: "#EC4899", group: false },
-  { id: 4, name: "Dev team", msg: "Деплой прошёл успешно 🚀", time: "10:22", unread: 5, online: false, avatar: "DT", color: "#10B981", group: true },
-  { id: 5, name: "Михаил Орлов", msg: "Спасибо за помощь!", time: "Вчера", unread: 0, online: false, avatar: "МО", color: "#F97316", group: false },
-  { id: 6, name: "Анна Козлова", msg: "Когда будет готово?", time: "Вчера", unread: 1, online: true, avatar: "АК", color: "#3B82F6", group: false },
-  { id: 7, name: "Технологии | Блог", msg: "Новый пост: AI и будущее", time: "Вчера", unread: 0, online: false, avatar: "ТБ", color: "#8B5CF6", group: false, blog: true },
-  { id: 8, name: "Путешествия 🌍", msg: "Видео: Бали 2024", time: "2 дня", unread: 2, online: false, avatar: "ПТ", color: "#0EA5E9", group: false, video: true },
+  { id: 1, name: "Алексей Громов", msg: "Отправлю файлы сегодня вечером 👍", time: "14:32", unread: 3, online: true, avatar: "АГ", color: "#7C3AED", group: false, blog: false, video: false },
+  { id: 2, name: "Маркетинг команда", msg: "Юля: обновила презентацию!", time: "13:15", unread: 12, online: false, avatar: "МК", color: "#06B6D4", group: true, blog: false, video: false },
+  { id: 3, name: "Соня Белова", msg: "Увидимся завтра?", time: "11:48", unread: 0, online: true, avatar: "СБ", color: "#EC4899", group: false, blog: false, video: false },
+  { id: 4, name: "Dev team", msg: "Деплой прошёл успешно 🚀", time: "10:22", unread: 5, online: false, avatar: "DT", color: "#10B981", group: true, blog: false, video: false },
+  { id: 5, name: "Михаил Орлов", msg: "Спасибо за помощь!", time: "Вчера", unread: 0, online: false, avatar: "МО", color: "#F97316", group: false, blog: false, video: false },
+  { id: 6, name: "Анна Козлова", msg: "Когда будет готово?", time: "Вчера", unread: 1, online: true, avatar: "АК", color: "#3B82F6", group: false, blog: false, video: false },
+  { id: 7, name: "Технологии | Блог", msg: "Новый пост: AI и будущее", time: "Вчера", unread: 0, online: false, avatar: "ТБ", color: "#8B5CF6", group: false, blog: true, video: false },
+  { id: 8, name: "Путешествия 🌍", msg: "Видео: Бали 2024", time: "2 дня", unread: 2, online: false, avatar: "ПТ", color: "#0EA5E9", group: false, blog: false, video: true },
 ];
 
 const mockStoriesChats = [
@@ -48,27 +46,6 @@ const mockCalls = [
   { id: 2, name: "Алексей Громов", type: "audio", direction: "outgoing", time: "Сегодня, 11:30", duration: "5 мин", avatar: "АГ", color: "#7C3AED" },
   { id: 3, name: "Михаил Орлов", type: "video", direction: "missed", time: "Вчера, 19:45", duration: "—", avatar: "МО", color: "#F97316" },
   { id: 4, name: "Анна Козлова", type: "audio", direction: "incoming", time: "Вчера, 15:20", duration: "23 мин", avatar: "АК", color: "#3B82F6" },
-  { id: 5, name: "Dev team", type: "video", direction: "outgoing", time: "2 дня назад", duration: "47 мин", avatar: "DT", color: "#10B981" },
-];
-
-const mockStatuses = [
-  { id: 1, name: "Соня Белова", avatar: "СБ", color: "#EC4899", viewed: false, time: "5 мин назад", emoji: "☀️" },
-  { id: 2, name: "Алексей Громов", avatar: "АГ", color: "#7C3AED", viewed: false, time: "12 мин назад", emoji: "🚀" },
-  { id: 3, name: "Анна Козлова", avatar: "АК", color: "#3B82F6", viewed: true, time: "1 час назад", emoji: "🎨" },
-  { id: 4, name: "Михаил Орлов", avatar: "МО", color: "#F97316", viewed: true, time: "2 часа назад", emoji: "💪" },
-  { id: 5, name: "Дмитрий Фёдоров", avatar: "ДФ", color: "#10B981", viewed: true, time: "3 часа назад", emoji: "🎵" },
-];
-
-const mockVideos = [
-  { id: 1, author: "Соня Белова", avatar: "СБ", color: "#EC4899", title: "Мой новый арт-проект 🎨", likes: "2.4K", comments: "187", bg: "from-pink-900 to-purple-900", emoji: "🎨" },
-  { id: 2, author: "Алексей Громов", avatar: "АГ", color: "#7C3AED", title: "Тренировка утром 💪", likes: "1.1K", comments: "94", bg: "from-violet-900 to-blue-900", emoji: "💪" },
-  { id: 3, author: "Анна Козлова", avatar: "АК", color: "#3B82F6", title: "Путешествие в горы ⛰️", likes: "5.7K", comments: "312", bg: "from-blue-900 to-cyan-900", emoji: "⛰️" },
-];
-
-const mockDating = [
-  { id: 1, name: "Виктория, 26", city: "Москва", about: "Люблю путешествия, кофе и котов 🐱", tags: ["Путешествия", "Фото", "Музыка"], avatar: "В", color: "#EC4899", match: 94 },
-  { id: 2, name: "Кирилл, 29", city: "СПб", about: "Разработчик, играю в группе 🎸", tags: ["Музыка", "IT", "Спорт"], avatar: "К", color: "#7C3AED", match: 87 },
-  { id: 3, name: "Дарья, 24", city: "Казань", about: "Дизайнер интерьеров, веган 🌿", tags: ["Дизайн", "Еда", "Йога"], avatar: "Д", color: "#10B981", match: 79 },
 ];
 
 const mockServices = [
@@ -76,17 +53,18 @@ const mockServices = [
   { id: 2, title: "Разработка сайта", author: "Дмитрий Ф.", price: "от 15 000 ₽", category: "IT", avatar: "ДФ", color: "#7C3AED", rating: 5.0, reviews: 89, emoji: "💻" },
   { id: 3, title: "Фотосессия в студии", author: "Соня Б.", price: "от 8 000 ₽", category: "Фото", avatar: "СБ", color: "#3B82F6", rating: 4.8, reviews: 203, emoji: "📸" },
   { id: 4, title: "Копирайтинг", author: "Маша Л.", price: "от 1 500 ₽", category: "Текст", avatar: "МЛ", color: "#F97316", rating: 4.7, reviews: 56, emoji: "✍️" },
-  { id: 5, title: "SEO продвижение", author: "Игорь С.", price: "от 20 000 ₽", category: "Маркетинг", avatar: "ИС", color: "#10B981", rating: 4.6, reviews: 34, emoji: "📈" },
-  { id: 6, title: "Видеомонтаж", author: "Коля В.", price: "от 5 000 ₽", category: "Видео", avatar: "КВ", color: "#D946EF", rating: 4.9, reviews: 71, emoji: "🎬" },
+];
+
+const mockDating = [
+  { id: 1, name: "Виктория, 26", city: "Москва", about: "Люблю путешествия, кофе и котов 🐱", tags: ["Путешествия", "Фото", "Музыка"], avatar: "В", color: "#EC4899", match: 94 },
+  { id: 2, name: "Кирилл, 29", city: "СПб", about: "Разработчик, играю в группе 🎸", tags: ["Музыка", "IT", "Спорт"], avatar: "К", color: "#7C3AED", match: 87 },
 ];
 
 const mockProfilePhotos = [
   { id: 1, emoji: "🌅", bg: "from-orange-800 to-pink-900", likes: 24, comments: [{ user: "Соня", text: "Красиво! 😍" }, { user: "Алексей", text: "Огонь фото 🔥" }], reactions: ["❤️", "🔥", "😍"] },
   { id: 2, emoji: "🏔️", bg: "from-blue-900 to-slate-800", likes: 41, comments: [{ user: "Анна", text: "Где это?" }], reactions: ["😮", "❤️"] },
-  { id: 3, emoji: "🎉", bg: "from-purple-900 to-pink-800", likes: 67, comments: [{ user: "Михаил", text: "Праздник!" }, { user: "Дмитрий", text: "🎊🎊" }], reactions: ["🎉", "❤️", "😍", "🔥"] },
+  { id: 3, emoji: "🎉", bg: "from-purple-900 to-pink-800", likes: 67, comments: [{ user: "Михаил", text: "Праздник!" }], reactions: ["🎉", "❤️", "😍", "🔥"] },
   { id: 4, emoji: "☕", bg: "from-amber-900 to-orange-800", likes: 18, comments: [], reactions: ["☕", "❤️"] },
-  { id: 5, emoji: "🌿", bg: "from-green-900 to-teal-800", likes: 33, comments: [{ user: "Элина", text: "Уютно!" }], reactions: ["🌿", "❤️"] },
-  { id: 6, emoji: "🎸", bg: "from-violet-900 to-indigo-800", likes: 55, comments: [{ user: "Алексей", text: "Рок!" }], reactions: ["🎸", "🔥", "❤️"] },
 ];
 
 const mockProfileActual = [
@@ -95,8 +73,31 @@ const mockProfileActual = [
   { id: 3, emoji: "🍕", bg: "from-red-800 to-rose-900", label: "Любимое место" },
 ];
 
-// ── Components ────────────────────────────────────────────────
+// ── glassmorphic iphone-style button ─────────────────────────
+const glassBtn = `
+  relative overflow-hidden
+  backdrop-blur-2xl
+  border border-white/10
+  transition-all duration-200
+  hover:border-white/20
+  active:scale-95
+`;
 
+// subtle inner-glow shine like iOS
+function GlassButton({ children, onClick, className = "", title = "" }: { children: React.ReactNode; onClick?: () => void; className?: string; title?: string }) {
+  return (
+    <button onClick={onClick} title={title}
+      className={`${glassBtn} ${className}`}
+      style={{ background: "linear-gradient(145deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 60%, rgba(255,255,255,0.07) 100%)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 16px rgba(0,0,0,0.3)" }}>
+      {/* shine overlay */}
+      <span className="pointer-events-none absolute inset-0 rounded-[inherit]"
+        style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%)" }} />
+      {children}
+    </button>
+  );
+}
+
+// ── Avatar ────────────────────────────────────────────────────
 function Ava({ text, color, size = 40, online }: { text: string; color: string; size?: number; online?: boolean }) {
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
@@ -112,54 +113,49 @@ function Ava({ text, color, size = 40, online }: { text: string; color: string; 
   );
 }
 
-function GBtn({ children, className = "", onClick, small }: { children: React.ReactNode; className?: string; onClick?: () => void; small?: boolean }) {
-  return (
-    <button onClick={onClick}
-      className={`grad-primary text-white font-semibold rounded-xl transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95 ${small ? "px-4 py-2 text-sm" : "px-6 py-3 text-base"} ${className}`}>
-      {children}
-    </button>
-  );
-}
-
 // ── Chats ─────────────────────────────────────────────────────
 function ChatsSection() {
-  const [tab, setTab] = useState<"all" | "personal" | "groups" | "blogs" | "video">("all");
+  const [enabled, setEnabled] = useState({ personal: true, groups: true, blogs: true, video: true });
   const [search, setSearch] = useState("");
 
-  const tabs = [
-    { id: "all" as const, label: "Все" },
-    { id: "personal" as const, label: "Личные" },
-    { id: "groups" as const, label: "Группы" },
-    { id: "blogs" as const, label: "Блоги" },
-    { id: "video" as const, label: "Видео" },
-  ];
+  const toggle = (key: keyof typeof enabled) =>
+    setEnabled(p => ({ ...p, [key]: !p[key] }));
 
   const filtered = mockChats.filter(c => {
-    const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
-    if (tab === "personal") return matchSearch && !c.group && !(c as { blog?: boolean }).blog && !(c as { video?: boolean }).video;
-    if (tab === "groups") return matchSearch && c.group;
-    if (tab === "blogs") return matchSearch && (c as { blog?: boolean }).blog;
-    if (tab === "video") return matchSearch && (c as { video?: boolean }).video;
-    return matchSearch;
+    const q = c.name.toLowerCase().includes(search.toLowerCase());
+    if (!q) return false;
+    if (!c.group && !c.blog && !c.video) return enabled.personal;
+    if (c.group) return enabled.groups;
+    if (c.blog) return enabled.blogs;
+    if (c.video) return enabled.video;
+    return true;
   });
+
+  const pills: { key: keyof typeof enabled; label: string; color: string }[] = [
+    { key: "personal", label: "Личные", color: "#A855F7" },
+    { key: "groups", label: "Группы", color: "#06B6D4" },
+    { key: "blogs", label: "Блоги", color: "#8B5CF6" },
+    { key: "video", label: "Видео", color: "#EC4899" },
+  ];
 
   return (
     <div className="flex flex-col h-full animate-fade-in">
-      {/* Stories strip */}
+      {/* Stories */}
       <div className="px-3 pt-3 pb-1">
         <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-          {/* Add story */}
           <div className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
             <div className="w-14 h-14 rounded-full flex items-center justify-center border-2 border-dashed border-purple-500/50 hover:border-purple-400 transition-colors"
-              style={{ background: "rgba(168,85,247,0.1)" }}>
+              style={{ background: "rgba(168,85,247,0.08)" }}>
               <Icon name="Plus" size={20} className="text-purple-400" />
             </div>
             <span className="text-[10px] text-muted-foreground">Моя</span>
           </div>
           {mockStoriesChats.map(s => (
             <div key={s.id} className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
-              <div className={`p-[2px] rounded-full ${s.viewed ? "border border-muted-foreground/30" : ""}`}
-                style={s.viewed ? {} : { background: "linear-gradient(135deg,#F59E0B,#EC4899,#A855F7)" }}>
+              <div className={`p-[2px] rounded-full`}
+                style={s.viewed
+                  ? { border: "2px solid rgba(255,255,255,0.15)", borderRadius: "50%" }
+                  : { background: "linear-gradient(135deg,#F59E0B,#EC4899,#A855F7)", padding: "2px" }}>
                 <div className="bg-[#0A0B12] p-[2px] rounded-full">
                   <Ava text={s.avatar} color={s.color} size={46} />
                 </div>
@@ -170,28 +166,34 @@ function ChatsSection() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="px-3 pb-2">
-        <div className="relative">
-          <Icon name="Search" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск..."
-            className="w-full glass rounded-xl pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none border border-transparent focus:border-purple-500/50 transition-colors" />
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 px-3 pb-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-        {tabs.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${tab === t.id ? "text-white" : "glass text-muted-foreground hover:text-foreground"}`}
-            style={tab === t.id ? { background: "linear-gradient(135deg,#7C3AED,#A855F7)" } : {}}>
-            {t.label}
+      {/* Filter pills */}
+      <div className="flex gap-2 px-3 pb-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+        {pills.map(p => (
+          <button key={p.key} onClick={() => toggle(p.key)}
+            className="flex items-center gap-1.5 flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200"
+            style={{
+              background: enabled[p.key]
+                ? `linear-gradient(145deg, ${p.color}33, ${p.color}18)`
+                : "rgba(255,255,255,0.04)",
+              border: `1px solid ${enabled[p.key] ? p.color + "55" : "rgba(255,255,255,0.08)"}`,
+              boxShadow: enabled[p.key]
+                ? `inset 0 1px 0 rgba(255,255,255,0.15), 0 0 12px ${p.color}33`
+                : "inset 0 1px 0 rgba(255,255,255,0.06)",
+              color: enabled[p.key] ? p.color : "rgba(255,255,255,0.35)",
+            }}>
+            {/* LED dot */}
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all duration-300"
+              style={{
+                background: enabled[p.key] ? p.color : "rgba(255,255,255,0.2)",
+                boxShadow: enabled[p.key] ? `0 0 6px ${p.color}, 0 0 12px ${p.color}88` : "none",
+              }} />
+            {p.label}
           </button>
         ))}
       </div>
 
       {/* Chat list */}
-      <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+      <div className="flex-1 overflow-y-auto px-2 space-y-0.5 pb-2">
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center h-32 text-muted-foreground text-sm gap-2">
             <Icon name="MessageCircleOff" size={28} />
@@ -199,22 +201,26 @@ function ChatsSection() {
           </div>
         )}
         {filtered.map(chat => (
-          <div key={chat.id} className="flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01]">
+          <div key={chat.id} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.03)" }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.07)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.03)")}>
             <Ava text={chat.avatar} color={chat.color} size={48} online={chat.online} />
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-0.5">
                 <span className="font-semibold text-foreground text-sm flex items-center gap-1.5">
                   {chat.name}
                   {chat.group && <Icon name="Users" size={11} className="text-muted-foreground" />}
-                  {(chat as { blog?: boolean }).blog && <Icon name="BookOpen" size={11} className="text-purple-400" />}
-                  {(chat as { video?: boolean }).video && <Icon name="Play" size={11} className="text-pink-400" />}
+                  {chat.blog && <Icon name="BookOpen" size={11} className="text-purple-400" />}
+                  {chat.video && <Icon name="Play" size={11} className="text-pink-400" />}
                 </span>
                 <span className="text-xs text-muted-foreground">{chat.time}</span>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground truncate pr-2">{chat.msg}</p>
                 {chat.unread > 0 && (
-                  <span className="grad-primary text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center flex-shrink-0">
+                  <span className="text-white text-xs font-bold rounded-full px-2 py-0.5 min-w-[20px] text-center flex-shrink-0"
+                    style={{ background: "linear-gradient(135deg,#7C3AED,#A855F7)" }}>
                     {chat.unread}
                   </span>
                 )}
@@ -224,12 +230,14 @@ function ChatsSection() {
         ))}
       </div>
 
-      <div className="p-3 pt-0">
-        <GBtn className="w-full">
-          <span className="flex items-center justify-center gap-2">
-            <Icon name="Plus" size={17} />Новый чат
-          </span>
-        </GBtn>
+      {/* Search bottom */}
+      <div className="px-3 pb-3 pt-1">
+        <div className="relative">
+          <Icon name="Search" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск чатов..."
+            className="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none border border-white/8 focus:border-purple-500/40 transition-colors"
+            style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(20px)" }} />
+        </div>
       </div>
     </div>
   );
@@ -245,21 +253,22 @@ function CallsSection() {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="p-4 pb-2">
-        <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#06B6D4,#3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Звонки</h2>
+        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#06B6D4,#3B82F6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Звонки</h2>
         <div className="grid grid-cols-2 gap-2 mb-2">
-          <button className="glass rounded-xl p-3 flex items-center gap-2 hover:border-cyan-500/50 border border-transparent transition-all hover:scale-105">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center"><Icon name="Phone" size={16} className="text-cyan-400" /></div>
-            <span className="text-sm font-medium">Аудио</span>
-          </button>
-          <button className="glass rounded-xl p-3 flex items-center gap-2 hover:border-violet-500/50 border border-transparent transition-all hover:scale-105">
-            <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center"><Icon name="Video" size={16} className="text-violet-400" /></div>
-            <span className="text-sm font-medium">Видео</span>
-          </button>
+          {[{ icon: "Phone", label: "Аудио", color: "#06B6D4" }, { icon: "Video", label: "Видео", color: "#8B5CF6" }].map(b => (
+            <GlassButton key={b.label} className="rounded-xl p-3 flex items-center gap-2 w-full">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: b.color + "22" }}>
+                <Icon name={b.icon} size={16} style={{ color: b.color }} />
+              </div>
+              <span className="text-sm font-medium">{b.label}</span>
+            </GlassButton>
+          ))}
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         {mockCalls.map(call => (
-          <div key={call.id} className="flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01]">
+          <div key={call.id} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.03)" }}>
             <Ava text={call.avatar} color={call.color} size={44} />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 mb-0.5">{dirIcon(call.direction)}<span className="font-semibold text-sm">{call.name}</span></div>
@@ -268,82 +277,11 @@ function CallsSection() {
                 <span>{call.time}</span>{call.duration !== "—" && <span>· {call.duration}</span>}
               </div>
             </div>
-            <button className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center hover:bg-emerald-500/40 transition-colors">
+            <GlassButton className="w-9 h-9 rounded-full flex items-center justify-center">
               <Icon name={call.type === "video" ? "Video" : "Phone"} size={16} className="text-emerald-400" />
-            </button>
+            </GlassButton>
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Statuses ──────────────────────────────────────────────────
-function StatusesSection() {
-  return (
-    <div className="flex flex-col h-full animate-fade-in">
-      <div className="p-4 pb-3">
-        <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#F59E0B,#EF4444)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Статусы</h2>
-        <p className="text-sm text-muted-foreground mb-3">Исчезают через 24 часа</p>
-        <button className="w-full glass rounded-xl p-4 flex items-center gap-3 border-2 border-dashed border-orange-500/30 hover:border-orange-500/60 transition-all hover:scale-[1.01]">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg,#F59E0B,#EF4444)" }}>
-            <Icon name="Plus" size={22} className="text-white" />
-          </div>
-          <div className="text-left"><p className="font-semibold text-sm">Добавить статус</p><p className="text-xs text-muted-foreground">Фото, видео или текст</p></div>
-        </button>
-      </div>
-      <div className="px-4 mb-2"><p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Непросмотренные</p></div>
-      <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
-        {mockStatuses.map(s => (
-          <div key={s.id} className={`flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01] ${s.viewed ? "opacity-60" : ""}`}>
-            <div className="relative">
-              <div className="absolute rounded-full" style={s.viewed
-                ? { inset: -3, border: "2px solid #333" }
-                : { inset: -3, background: "linear-gradient(135deg,#F59E0B,#EF4444)", borderRadius: "50%" }} />
-              <Ava text={s.avatar} color={s.color} size={46} />
-            </div>
-            <div className="flex-1"><p className="font-semibold text-sm">{s.name}</p><p className="text-xs text-muted-foreground">{s.time}</p></div>
-            <span className="text-2xl">{s.emoji}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Video ─────────────────────────────────────────────────────
-function VideoSection() {
-  return (
-    <div className="flex flex-col h-full animate-fade-in">
-      <div className="p-4 pb-3">
-        <h2 className="text-2xl font-bold text-grad-primary mb-1" style={{ fontFamily: "Golos Text" }}>Видео</h2>
-        <p className="text-sm text-muted-foreground">Короткие видео от сообщества</p>
-      </div>
-      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-3">
-        {mockVideos.map(v => (
-          <div key={v.id} className="rounded-2xl overflow-hidden hover:scale-[1.01] transition-all cursor-pointer">
-            <div className={`bg-gradient-to-br ${v.bg} h-52 flex items-center justify-center relative`}>
-              <span className="text-7xl animate-float">{v.emoji}</span>
-              <div className="absolute inset-0 bg-black/30" />
-              <button className="absolute inset-0 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full glass-strong flex items-center justify-center hover:scale-110 transition-transform" style={{ boxShadow: "0 0 20px rgba(168,85,247,0.4)" }}>
-                  <Icon name="Play" size={24} className="text-white ml-1" />
-                </div>
-              </button>
-              <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                <div className="flex items-center gap-2"><Ava text={v.avatar} color={v.color} size={32} /><span className="text-white text-sm font-semibold drop-shadow-lg">{v.author}</span></div>
-                <div className="flex items-center gap-3 text-white text-sm">
-                  <span className="flex items-center gap-1"><Icon name="Heart" size={14} />{v.likes}</span>
-                  <span className="flex items-center gap-1"><Icon name="MessageCircle" size={14} />{v.comments}</span>
-                </div>
-              </div>
-            </div>
-            <div className="glass p-3"><p className="text-sm font-medium">{v.title}</p></div>
-          </div>
-        ))}
-        <button className="w-full glass rounded-xl p-4 border-2 border-dashed border-pink-500/30 hover:border-pink-500/60 transition-all flex items-center justify-center gap-2 text-pink-400 hover:scale-[1.01]">
-          <Icon name="Upload" size={18} /><span className="font-semibold">Загрузить видео</span>
-        </button>
       </div>
     </div>
   );
@@ -357,13 +295,15 @@ function DatingSection() {
     <div className="flex flex-col h-full animate-fade-in">
       <div className="p-4 pb-2">
         <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#F43F5E,#EC4899)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Знакомства</h2>
-        <p className="text-sm text-muted-foreground">Ваш профиль уже готов!</p>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-4 gap-4">
-        <div className="w-full max-w-sm rounded-3xl overflow-hidden" style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(30px)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: `0 0 30px ${card.color}33` }}>
-          <div className="h-52 flex items-center justify-center relative" style={{ background: `radial-gradient(circle at 50% 50%, ${card.color}44, ${card.color}11)` }}>
+        <div className="w-full max-w-sm rounded-3xl overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(30px)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: `0 0 30px ${card.color}33` }}>
+          <div className="h-52 flex items-center justify-center relative"
+            style={{ background: `radial-gradient(circle at 50% 50%, ${card.color}44, ${card.color}11)` }}>
             <div className="w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold text-white" style={{ background: card.color }}>{card.avatar}</div>
-            <div className="absolute top-3 right-3 glass rounded-full px-3 py-1 text-sm font-bold text-white flex items-center gap-1">
+            <div className="absolute top-3 right-3 px-3 py-1 text-sm font-bold text-white flex items-center gap-1 rounded-full"
+              style={{ background: "rgba(255,255,255,0.12)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.2)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)" }}>
               <Icon name="Sparkles" size={13} className="text-yellow-400" />{card.match}%
             </div>
           </div>
@@ -374,14 +314,22 @@ function DatingSection() {
             </div>
             <p className="text-sm text-muted-foreground mb-3">{card.about}</p>
             <div className="flex flex-wrap gap-2">
-              {card.tags.map(t => <span key={t} className="glass px-3 py-1 rounded-full text-xs font-medium" style={{ color: card.color }}>{t}</span>)}
+              {card.tags.map(t => <span key={t} className="px-3 py-1 rounded-full text-xs font-medium" style={{ background: card.color + "22", color: card.color }}>{t}</span>)}
             </div>
           </div>
         </div>
         <div className="flex gap-4">
-          <button onClick={() => setIdx(i => i + 1)} className="w-14 h-14 rounded-full glass flex items-center justify-center hover:scale-110 transition-all border border-rose-500/40"><Icon name="X" size={22} className="text-rose-400" /></button>
-          <button className="w-14 h-14 rounded-full glass flex items-center justify-center hover:scale-110 transition-all border border-yellow-500/40"><Icon name="Star" size={22} className="text-yellow-400" /></button>
-          <button onClick={() => setIdx(i => i + 1)} className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all" style={{ background: "linear-gradient(135deg,#F43F5E,#EC4899)", boxShadow: "0 0 20px rgba(236,72,153,0.4)" }}><Icon name="Heart" size={22} className="text-white" /></button>
+          <GlassButton onClick={() => setIdx(i => i + 1)} className="w-14 h-14 rounded-full flex items-center justify-center" style={{ borderColor: "rgba(244,63,94,0.4)" } as React.CSSProperties}>
+            <Icon name="X" size={22} className="text-rose-400" />
+          </GlassButton>
+          <GlassButton className="w-14 h-14 rounded-full flex items-center justify-center" style={{ borderColor: "rgba(234,179,8,0.4)" } as React.CSSProperties}>
+            <Icon name="Star" size={22} className="text-yellow-400" />
+          </GlassButton>
+          <button onClick={() => setIdx(i => i + 1)}
+            className="w-14 h-14 rounded-full flex items-center justify-center hover:scale-110 transition-all active:scale-95"
+            style={{ background: "linear-gradient(135deg,#F43F5E,#EC4899)", boxShadow: "0 0 20px rgba(236,72,153,0.4)" }}>
+            <Icon name="Heart" size={22} className="text-white" />
+          </button>
         </div>
       </div>
     </div>
@@ -390,27 +338,15 @@ function DatingSection() {
 
 // ── Services ──────────────────────────────────────────────────
 function ServicesSection() {
-  const categories = ["Все", "Дизайн", "IT", "Фото", "Текст", "Маркетинг", "Видео"];
-  const [cat, setCat] = useState("Все");
-  const filtered = cat === "Все" ? mockServices : mockServices.filter(s => s.category === cat);
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="p-4 pb-2">
-        <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#10B981,#06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Услуги</h2>
-        <p className="text-sm text-muted-foreground mb-3">Найдите специалиста прямо здесь</p>
-        <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-          {categories.map(c => (
-            <button key={c} onClick={() => setCat(c)}
-              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${cat === c ? "text-white" : "glass text-muted-foreground hover:text-foreground"}`}
-              style={cat === c ? { background: "linear-gradient(135deg,#10B981,#06B6D4)" } : {}}>
-              {c}
-            </button>
-          ))}
-        </div>
+        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#10B981,#06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Услуги</h2>
       </div>
-      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2 mt-1">
-        {filtered.map(s => (
-          <div key={s.id} className="glass rounded-xl p-4 hover:glass-strong cursor-pointer transition-all hover:scale-[1.01] flex items-start gap-3">
+      <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
+        {mockServices.map(s => (
+          <div key={s.id} className="rounded-xl p-4 flex items-start gap-3 cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
             <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background: s.color + "22" }}>{s.emoji}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
@@ -426,9 +362,6 @@ function ServicesSection() {
           </div>
         ))}
       </div>
-      <div className="p-3 pt-0">
-        <GBtn className="w-full"><span className="flex items-center justify-center gap-2"><Icon name="Plus" size={17} />Разместить услугу</span></GBtn>
-      </div>
     </div>
   );
 }
@@ -438,28 +371,34 @@ function ContactsSection() {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="p-4 pb-2">
-        <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#3B82F6,#6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Контакты</h2>
-        <p className="text-sm text-muted-foreground mb-3">{mockContacts.length} контактов</p>
+        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#3B82F6,#6366F1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Контакты</h2>
         <div className="relative">
           <Icon name="Search" size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input placeholder="Поиск контактов..." className="w-full glass rounded-xl pl-9 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none border border-transparent focus:border-blue-500/50 transition-colors" />
+          <input placeholder="Поиск контактов..." className="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm placeholder:text-muted-foreground outline-none transition-colors"
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }} />
         </div>
       </div>
       <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">
         <div className="px-2 py-1"><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">В сети</span></div>
         {mockContacts.filter(c => c.online).map(c => (
-          <div key={c.id} className="flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01]">
-            <Ava text={c.avatar} color={c.color} size={44} online={c.online} />
+          <div key={c.id} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.03)" }}>
+            <Ava text={c.avatar} color={c.color} size={44} online />
             <div className="flex-1"><p className="font-semibold text-sm">{c.name}</p><p className="text-xs text-emerald-400">{c.status}</p></div>
             <div className="flex gap-2">
-              <button className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center hover:bg-violet-500/40 transition-colors"><Icon name="MessageCircle" size={14} className="text-violet-400" /></button>
-              <button className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center hover:bg-cyan-500/40 transition-colors"><Icon name="Phone" size={14} className="text-cyan-400" /></button>
+              <GlassButton className="w-8 h-8 rounded-full flex items-center justify-center">
+                <Icon name="MessageCircle" size={14} className="text-violet-400" />
+              </GlassButton>
+              <GlassButton className="w-8 h-8 rounded-full flex items-center justify-center">
+                <Icon name="Phone" size={14} className="text-cyan-400" />
+              </GlassButton>
             </div>
           </div>
         ))}
-        <div className="px-2 py-1 mt-2"><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Недавно в сети</span></div>
+        <div className="px-2 py-1 mt-2"><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Недавно</span></div>
         {mockContacts.filter(c => !c.online).map(c => (
-          <div key={c.id} className="flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01] opacity-60">
+          <div key={c.id} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer opacity-50 transition-all hover:opacity-75"
+            style={{ background: "rgba(255,255,255,0.02)" }}>
             <Ava text={c.avatar} color={c.color} size={44} />
             <div className="flex-1"><p className="font-semibold text-sm">{c.name}</p><p className="text-xs text-muted-foreground">{c.status}</p></div>
           </div>
@@ -473,25 +412,23 @@ function ContactsSection() {
 function ProfileSection() {
   const [openComments, setOpenComments] = useState<number | null>(null);
   const [photoReactions, setPhotoReactions] = useState<Record<number, string[]>>({});
-
   const addReaction = (photoId: number, emoji: string) => {
     setPhotoReactions(prev => {
-      const existing = prev[photoId] || [];
-      if (existing.includes(emoji)) return { ...prev, [photoId]: existing.filter(e => e !== emoji) };
-      return { ...prev, [photoId]: [...existing, emoji] };
+      const ex = prev[photoId] || [];
+      return { ...prev, [photoId]: ex.includes(emoji) ? ex.filter(e => e !== emoji) : [...ex, emoji] };
     });
   };
-
   const reactionOptions = ["❤️", "🔥", "😍", "😮", "👏", "🎉"];
 
   return (
     <div className="flex flex-col h-full overflow-y-auto animate-fade-in">
-      {/* Header */}
       <div className="p-4 pb-0">
-        <div className="glass-strong rounded-2xl p-5 flex flex-col items-center text-center relative overflow-hidden mb-3">
+        <div className="rounded-2xl p-5 flex flex-col items-center text-center relative overflow-hidden mb-3"
+          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(30px)", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)" }}>
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ background: "radial-gradient(circle at 50% 0%, #A855F7, transparent 70%)" }} />
           <div className="relative mb-3">
-            <div className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold text-white" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899,#F97316)", boxShadow: "0 0 20px rgba(168,85,247,0.4)" }}>ВЫ</div>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold text-white"
+              style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899,#F97316)", boxShadow: "0 0 20px rgba(168,85,247,0.4)" }}>ВЫ</div>
             <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center border-2 border-[#0A0B12]" style={{ background: "#10B981" }}>
               <Icon name="Check" size={11} className="text-white" />
             </div>
@@ -499,58 +436,46 @@ function ProfileSection() {
           <h3 className="text-lg font-bold">Ваш аккаунт</h3>
           <p className="text-sm text-muted-foreground mb-1">@username · Москва 🌆</p>
           <p className="text-xs text-muted-foreground mb-3">Разработчик и путешественник ✈️</p>
-          <div className="flex gap-6 pt-3 border-t border-border/50 w-full justify-center">
+          <div className="flex gap-6 pt-3 border-t border-white/10 w-full justify-center">
             {[["248", "Контакты"], ["12", "Группы"], ["5", "Услуги"]].map(([n, l]) => (
               <div key={l} className="text-center"><p className="font-bold text-base">{n}</p><p className="text-xs text-muted-foreground">{l}</p></div>
             ))}
           </div>
         </div>
-
-        {/* Actions */}
         <div className="flex gap-2 mb-3">
-          <button className="flex-1 glass rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-2 hover:glass-strong transition-all">
-            <Icon name="Edit3" size={14} />Редактировать
-          </button>
-          <button className="flex-1 glass rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-2 hover:glass-strong transition-all">
-            <Icon name="Share2" size={14} />Поделиться
-          </button>
+          {[{ icon: "Edit3", label: "Редактировать" }, { icon: "Share2", label: "Поделиться" }].map(b => (
+            <GlassButton key={b.label} className="flex-1 rounded-xl py-2 text-sm font-semibold flex items-center justify-center gap-2">
+              <Icon name={b.icon} size={14} />{b.label}
+            </GlassButton>
+          ))}
         </div>
       </div>
 
-      {/* Актуальное (Highlights) */}
+      {/* Актуальное */}
       <div className="px-4 mb-1">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-bold text-foreground uppercase tracking-wider">Актуальное</p>
-          <button className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"><Icon name="Plus" size={12} />Добавить</button>
+          <p className="text-xs font-bold uppercase tracking-wider">Актуальное</p>
+          <button className="text-xs text-purple-400 flex items-center gap-1"><Icon name="Plus" size={12} />Добавить</button>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
           {mockProfileActual.map(a => (
             <div key={a.id} className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
-              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${a.bg} flex items-center justify-center text-2xl border-2 border-white/10 hover:scale-105 transition-transform`}>
-                {a.emoji}
-              </div>
+              <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${a.bg} flex items-center justify-center text-2xl border-2 border-white/10 hover:scale-105 transition-transform`}>{a.emoji}</div>
               <span className="text-[10px] text-muted-foreground text-center max-w-[60px] truncate">{a.label}</span>
             </div>
           ))}
-          <div className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-dashed border-white/20 hover:border-purple-500/50 transition-colors">
-              <Icon name="Plus" size={20} className="text-muted-foreground" />
-            </div>
-            <span className="text-[10px] text-muted-foreground">Новое</span>
-          </div>
         </div>
       </div>
 
-      {/* Stories strip */}
+      {/* Сторис */}
       <div className="px-4 mb-1">
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-bold text-foreground uppercase tracking-wider">Сторис</p>
-          <button className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"><Icon name="Plus" size={12} />Добавить</button>
+          <p className="text-xs font-bold uppercase tracking-wider">Сторис</p>
+          <button className="text-xs text-purple-400 flex items-center gap-1"><Icon name="Plus" size={12} />Добавить</button>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-          {/* Add story */}
           <div className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
-            <div className="w-14 h-14 rounded-full border-2 border-dashed border-purple-500/50 flex items-center justify-center hover:border-purple-400 transition-colors" style={{ background: "rgba(168,85,247,0.1)" }}>
+            <div className="w-14 h-14 rounded-full border-2 border-dashed border-purple-500/50 flex items-center justify-center" style={{ background: "rgba(168,85,247,0.08)" }}>
               <Icon name="Plus" size={18} className="text-purple-400" />
             </div>
             <span className="text-[10px] text-muted-foreground">Новая</span>
@@ -559,38 +484,33 @@ function ProfileSection() {
             <div key={i} className="flex flex-col items-center gap-1 flex-shrink-0 cursor-pointer">
               <div className="p-[2px] rounded-full" style={{ background: "linear-gradient(135deg,#F59E0B,#EC4899,#A855F7)" }}>
                 <div className="bg-[#0A0B12] p-[2px] rounded-full">
-                  <div className="w-[46px] h-[46px] rounded-full flex items-center justify-center text-xl" style={{ background: "linear-gradient(135deg,#1e1b4b,#312e81)" }}>
-                    {emoji}
-                  </div>
+                  <div className="w-[46px] h-[46px] rounded-full flex items-center justify-center text-xl" style={{ background: "linear-gradient(135deg,#1e1b4b,#312e81)" }}>{emoji}</div>
                 </div>
               </div>
-              <span className="text-[10px] text-muted-foreground">{i + 1}ч назад</span>
+              <span className="text-[10px] text-muted-foreground">{i + 1}ч</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Photos feed */}
+      {/* Photos */}
       <div className="px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-bold text-foreground uppercase tracking-wider">Фотографии</p>
-          <button className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1"><Icon name="Upload" size={12} />Загрузить</button>
+          <p className="text-xs font-bold uppercase tracking-wider">Фотографии</p>
+          <button className="text-xs text-purple-400 flex items-center gap-1"><Icon name="Upload" size={12} />Загрузить</button>
         </div>
         <div className="space-y-4">
           {mockProfilePhotos.map(photo => (
-            <div key={photo.id} className="glass rounded-2xl overflow-hidden">
-              {/* Photo */}
-              <div className={`bg-gradient-to-br ${photo.bg} h-56 flex items-center justify-center relative cursor-pointer`}>
+            <div key={photo.id} className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div className={`bg-gradient-to-br ${photo.bg} h-56 flex items-center justify-center cursor-pointer`}>
                 <span className="text-7xl animate-float">{photo.emoji}</span>
               </div>
-
-              {/* Reactions */}
-              <div className="px-4 pt-3 pb-1">
+              <div className="px-4 pt-3 pb-2" style={{ background: "rgba(255,255,255,0.03)" }}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex gap-1">
                     {reactionOptions.map(emoji => (
                       <button key={emoji} onClick={() => addReaction(photo.id, emoji)}
-                        className={`text-lg transition-all hover:scale-125 active:scale-110 ${(photoReactions[photo.id] || photo.reactions)?.includes(emoji) ? "opacity-100" : "opacity-30 hover:opacity-70"}`}>
+                        className={`text-lg transition-all hover:scale-125 active:scale-110 ${(photoReactions[photo.id] || photo.reactions)?.includes(emoji) ? "opacity-100" : "opacity-25 hover:opacity-60"}`}>
                         {emoji}
                       </button>
                     ))}
@@ -603,23 +523,22 @@ function ProfileSection() {
                     </button>
                   </div>
                 </div>
-
-                {/* Comments */}
                 {openComments === photo.id && (
-                  <div className="border-t border-border/50 pt-2 mt-1 space-y-2 animate-fade-in">
+                  <div className="border-t border-white/8 pt-2 space-y-2 animate-fade-in">
                     {photo.comments.length === 0 && <p className="text-xs text-muted-foreground text-center py-2">Будьте первым!</p>}
                     {photo.comments.map((c, i) => (
                       <div key={i} className="flex items-start gap-2">
                         <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: "#7C3AED" }}>{c.user[0]}</div>
-                        <div className="glass rounded-xl px-3 py-1.5 flex-1">
+                        <div className="rounded-xl px-3 py-1.5 flex-1" style={{ background: "rgba(255,255,255,0.06)" }}>
                           <p className="text-xs font-semibold text-purple-300">{c.user}</p>
-                          <p className="text-xs text-foreground">{c.text}</p>
+                          <p className="text-xs">{c.text}</p>
                         </div>
                       </div>
                     ))}
                     <div className="flex gap-2 mt-2">
-                      <input placeholder="Комментарий..." className="flex-1 glass rounded-xl px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground outline-none border border-transparent focus:border-purple-500/40 transition-colors" />
-                      <button className="w-8 h-8 rounded-xl flex items-center justify-center transition-all" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }}>
+                      <input placeholder="Комментарий..." className="flex-1 rounded-xl px-3 py-1.5 text-xs placeholder:text-muted-foreground outline-none"
+                        style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }} />
+                      <button className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }}>
                         <Icon name="Send" size={13} className="text-white" />
                       </button>
                     </div>
@@ -647,15 +566,12 @@ function SettingsSection() {
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <div className="p-4 pb-3">
-        <h2 className="text-2xl font-bold mb-1" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#64748B,#94A3B8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Настройки</h2>
-        <div className="glass rounded-xl px-3 py-2 mb-4 flex items-center gap-2">
-          <Icon name="Shield" size={14} className="text-emerald-400 flex-shrink-0" />
-          <span className="text-xs text-emerald-400 font-medium">Сквозное шифрование активно для всех чатов</span>
-        </div>
+        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "Golos Text", background: "linear-gradient(135deg,#64748B,#94A3B8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Настройки</h2>
       </div>
       <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1">
         {settings.map(s => (
-          <div key={s.icon} className="flex items-center gap-3 p-3 rounded-xl hover:glass cursor-pointer transition-all hover:scale-[1.01]">
+          <div key={s.icon} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.01]"
+            style={{ background: "rgba(255,255,255,0.03)" }}>
             <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: s.color + "22" }}>
               <Icon name={s.icon} size={18} style={{ color: s.color }} />
             </div>
@@ -678,8 +594,6 @@ export default function Index() {
     switch (active) {
       case "chats": return <ChatsSection />;
       case "calls": return <CallsSection />;
-      case "statuses": return <StatusesSection />;
-      case "video": return <VideoSection />;
       case "dating": return <DatingSection />;
       case "services": return <ServicesSection />;
       case "contacts": return <ContactsSection />;
@@ -690,85 +604,30 @@ export default function Index() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden" style={{ background: "#0A0B12" }}>
-      {/* Ambient glows */}
+      {/* Ambient */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-10 animate-pulse-slow" style={{ background: "#7C3AED" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full blur-3xl opacity-[0.07] animate-pulse-slow" style={{ background: "#06B6D4", animationDelay: "1.5s" }} />
+        <div className="absolute top-0 left-1/3 w-96 h-96 rounded-full blur-3xl opacity-8 animate-pulse-slow" style={{ background: "#7C3AED" }} />
+        <div className="absolute bottom-1/4 right-1/3 w-72 h-72 rounded-full blur-3xl opacity-[0.05] animate-pulse-slow" style={{ background: "#06B6D4", animationDelay: "1.5s" }} />
       </div>
 
-      {/* Sidebar */}
-      <aside
-        className={`flex-col h-full border-r border-white/5 relative z-20 transition-all duration-300 ease-in-out ${sidebarOpen ? "w-64 flex" : "w-0 overflow-hidden hidden md:flex md:w-0"}`}
-        style={{ flexShrink: 0 }}
-      >
-        <div className={`flex flex-col h-full w-64 transition-all duration-300 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-          {/* Logo */}
-          <div className="p-4 border-b border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)", boxShadow: "0 0 16px rgba(168,85,247,0.4)" }}>
-                <Icon name="Zap" size={18} className="text-white" />
-              </div>
-              <span className="text-xl font-black text-grad-primary" style={{ fontFamily: "Golos Text" }}>Вспышка</span>
-            </div>
-            <button onClick={() => setSidebarOpen(false)} className="w-7 h-7 rounded-lg glass flex items-center justify-center hover:glass-strong transition-all text-muted-foreground hover:text-foreground">
-              <Icon name="PanelLeftClose" size={15} />
-            </button>
-          </div>
-
-          {/* Nav */}
-          <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
-            {NAV_ITEMS.map(item => {
-              const isActive = active === item.id;
-              return (
-                <button key={item.id} onClick={() => setActive(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${isActive ? "glass-strong" : "hover:glass"}`}>
-                  {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full" style={{ background: item.color }} />}
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: isActive ? item.color + "33" : item.color + "15" }}>
-                    <Icon name={item.icon} size={16} style={{ color: item.color }} />
-                  </div>
-                  <span className={`text-sm font-semibold transition-colors ${isActive ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* User */}
-          <div className="p-3 border-t border-white/5">
-            <div className="flex items-center gap-3 px-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)" }}>ВЫ</div>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold truncate">Ваш аккаунт</p>
-                <p className="text-xs text-emerald-400">В сети</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main */}
+      {/* ── Main content (LEFT) ── */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative z-10 min-w-0">
-        {/* Header */}
-        <header className="flex items-center justify-between px-4 py-3 border-b border-white/5 glass flex-shrink-0">
+        {/* Header — no toggle button here */}
+        <header className="flex items-center justify-between px-4 py-3 border-b border-white/5 flex-shrink-0"
+          style={{ background: "rgba(10,11,18,0.7)", backdropFilter: "blur(20px)" }}>
           <div className="flex items-center gap-2">
-            {/* Toggle sidebar button */}
-            <button onClick={() => setSidebarOpen(v => !v)}
-              className="w-9 h-9 rounded-xl glass flex items-center justify-center hover:glass-strong transition-all text-muted-foreground hover:text-foreground">
-              <Icon name={sidebarOpen ? "PanelLeftClose" : "PanelLeftOpen"} size={17} />
-            </button>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: activeNav.color + "22" }}>
               <Icon name={activeNav.icon} size={16} style={{ color: activeNav.color }} />
             </div>
             <h1 className="font-bold text-base" style={{ fontFamily: "Golos Text" }}>{activeNav.label}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <button className="w-9 h-9 rounded-xl glass flex items-center justify-center hover:glass-strong transition-all">
+            <GlassButton className="w-9 h-9 rounded-xl flex items-center justify-center">
               <Icon name="Search" size={16} className="text-muted-foreground" />
-            </button>
-            <button className="w-9 h-9 rounded-xl glass flex items-center justify-center hover:glass-strong transition-all">
+            </GlassButton>
+            <GlassButton className="w-9 h-9 rounded-xl flex items-center justify-center">
               <Icon name="MoreVertical" size={16} className="text-muted-foreground" />
-            </button>
+            </GlassButton>
           </div>
         </header>
 
@@ -776,22 +635,147 @@ export default function Index() {
           {renderSection()}
         </div>
 
-        {/* Mobile nav */}
-        <nav className="md:hidden flex border-t border-white/5 glass flex-shrink-0">
+        {/* Mobile bottom nav */}
+        <nav className="md:hidden flex border-t border-white/5 flex-shrink-0"
+          style={{ background: "rgba(10,11,18,0.8)", backdropFilter: "blur(20px)" }}>
           {NAV_ITEMS.map(item => {
             const isActive = active === item.id;
             return (
               <button key={item.id} onClick={() => setActive(item.id)}
-                className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-all ${isActive ? "opacity-100" : "opacity-40"}`}>
-                <div className="w-6 h-6 rounded-lg flex items-center justify-center transition-all" style={{ background: isActive ? item.color + "33" : "transparent" }}>
-                  <Icon name={item.icon} size={14} style={{ color: isActive ? item.color : undefined }} />
-                </div>
+                className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-all ${isActive ? "opacity-100" : "opacity-35"}`}>
+                <Icon name={item.icon} size={14} style={{ color: isActive ? item.color : undefined }} />
                 <span className="text-[8px] font-medium">{item.label}</span>
               </button>
             );
           })}
         </nav>
       </main>
+
+      {/* ── RIGHT SIDEBAR ── */}
+      <aside className="relative z-20 flex flex-row-reverse h-full flex-shrink-0">
+        {/* Collapsed strip — always visible */}
+        <div className="flex flex-col items-center pt-4 pb-4 gap-3 h-full flex-shrink-0"
+          style={{
+            width: 56,
+            background: "rgba(255,255,255,0.03)",
+            backdropFilter: "blur(32px)",
+            borderLeft: "1px solid rgba(255,255,255,0.07)",
+            boxShadow: "inset 1px 0 0 rgba(255,255,255,0.05)",
+          }}>
+
+          {/* Toggle — prominent, glowing */}
+          <button onClick={() => setSidebarOpen(v => !v)}
+            className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0"
+            style={{
+              background: sidebarOpen
+                ? "linear-gradient(145deg,rgba(168,85,247,0.35),rgba(168,85,247,0.15))"
+                : "linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.05))",
+              border: `1px solid ${sidebarOpen ? "rgba(168,85,247,0.5)" : "rgba(255,255,255,0.12)"}`,
+              boxShadow: sidebarOpen
+                ? "inset 0 1px 0 rgba(255,255,255,0.25), 0 0 16px rgba(168,85,247,0.4)"
+                : "inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 12px rgba(0,0,0,0.3)",
+            }}>
+            <Icon name={sidebarOpen ? "PanelRightClose" : "PanelRightOpen"} size={18}
+              style={{ color: sidebarOpen ? "#C084FC" : "rgba(255,255,255,0.6)" }} />
+          </button>
+
+          {/* + New chat */}
+          <GlassButton onClick={() => setActive("chats")} title="Новый чат"
+            className="w-10 h-10 rounded-2xl flex items-center justify-center">
+            <span className="text-lg font-light text-purple-300 leading-none">+</span>
+          </GlassButton>
+
+          {/* Ч — Chats */}
+          <GlassButton onClick={() => setActive("chats")} title="Чаты"
+            className="w-10 h-10 rounded-2xl flex items-center justify-center"
+            style={{ fontFamily: "Golos Text" } as React.CSSProperties}>
+            <span className="text-sm font-bold" style={{ color: "#A855F7" }}>Ч</span>
+          </GlassButton>
+
+          {/* Alice AI */}
+          <GlassButton title="Алиса"
+            className="w-10 h-10 rounded-2xl flex items-center justify-center relative overflow-visible">
+            <span className="text-base leading-none">🤖</span>
+            <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-[#0A0B12]"
+              style={{ background: "linear-gradient(135deg,#06B6D4,#3B82F6)", boxShadow: "0 0 6px #06B6D4" }} />
+          </GlassButton>
+
+          {/* Divider */}
+          <div className="w-6 h-px my-1 flex-shrink-0" style={{ background: "rgba(255,255,255,0.1)" }} />
+
+          {/* Nav icons */}
+          <div className="flex flex-col gap-2 flex-1">
+            {NAV_ITEMS.map(item => {
+              const isActive = active === item.id;
+              return (
+                <button key={item.id} onClick={() => setActive(item.id)} title={item.label}
+                  className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0"
+                  style={{
+                    background: isActive
+                      ? `linear-gradient(145deg, ${item.color}33, ${item.color}18)`
+                      : "rgba(255,255,255,0.03)",
+                    border: `1px solid ${isActive ? item.color + "44" : "rgba(255,255,255,0.07)"}`,
+                    boxShadow: isActive
+                      ? `inset 0 1px 0 rgba(255,255,255,0.18), 0 0 12px ${item.color}33`
+                      : "inset 0 1px 0 rgba(255,255,255,0.06)",
+                  }}>
+                  <Icon name={item.icon} size={16} style={{ color: isActive ? item.color : "rgba(255,255,255,0.4)" }} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Expanded panel */}
+        <div className={`h-full overflow-hidden transition-all duration-300 ease-in-out ${sidebarOpen ? "w-56" : "w-0"}`}
+          style={{
+            background: "rgba(12,13,22,0.65)",
+            backdropFilter: "blur(40px)",
+            borderLeft: "1px solid rgba(255,255,255,0.06)",
+            boxShadow: "inset 1px 0 0 rgba(255,255,255,0.04)",
+          }}>
+          <div className={`flex flex-col h-full w-56 transition-opacity duration-200 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+
+            {/* User at top */}
+            <div className="p-4 pb-3 border-b border-white/5">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+                  style={{ background: "linear-gradient(135deg,#7C3AED,#EC4899)", boxShadow: "0 0 10px rgba(168,85,247,0.35)" }}>ВЫ</div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold truncate">Ваш аккаунт</p>
+                  <p className="text-xs text-emerald-400 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" style={{ boxShadow: "0 0 5px #10B981" }} />
+                    В сети
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Nav labels */}
+            <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+              {NAV_ITEMS.map(item => {
+                const isActive = active === item.id;
+                return (
+                  <button key={item.id} onClick={() => setActive(item.id)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative"
+                    style={{
+                      background: isActive ? `rgba(255,255,255,0.06)` : "transparent",
+                      border: `1px solid ${isActive ? "rgba(255,255,255,0.1)" : "transparent"}`,
+                      boxShadow: isActive ? "inset 0 1px 0 rgba(255,255,255,0.1)" : "none",
+                    }}>
+                    {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 rounded-r-full" style={{ background: item.color }} />}
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ background: isActive ? item.color + "33" : item.color + "15" }}>
+                      <Icon name={item.icon} size={14} style={{ color: item.color }} />
+                    </div>
+                    <span className={`text-sm font-semibold transition-colors ${isActive ? "text-foreground" : "text-muted-foreground"}`}>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 }
